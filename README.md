@@ -8,7 +8,7 @@ install docker. The instructions can be found here depending on your OS. https:/
 
 The following instructions is for Ubuntu OS.
 
-$ sudo  docker run --net=host -e POSTGRES_PASSWORD=m123456 -d postgres #lunches the container with Postgres image.
+$ sudo  docker run --net=host -e POSTGRES_PASSWORD=123456 -d postgres #lunches the container with Postgres image.
 $ docker ps #lists your current containers
 
 $ sudo docker exec -it <Container_ID> bash #takes you to your container... the container_ID can be found after running $docker ps
@@ -31,7 +31,9 @@ $psql
 if you do not have node and npm installed on your computer make sure to install it first.
 $cd CSCI430CTF1
 $sudo npm install
-$sudo npm run:dev
+$sudo npm install -g nodemon
+$sudo npm install --save-dev nodemon
+$sudo npm run start:dev
 
 
 ## to interact with the app
