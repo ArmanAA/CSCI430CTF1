@@ -8,7 +8,8 @@ install docker. The instructions can be found here depending on your OS. https:/
 
 The following instructions is for Ubuntu OS.
 
-$ sudo  docker run --net=host -e POSTGRES_PASSWORD=123456 -d postgres #lunches the container with Postgres image.
+$docker-compose up
+
 $ docker ps #lists your current containers
 
 $ sudo docker exec -it <Container_ID> bash #takes you to your container... the container_ID can be found after running $docker ps
