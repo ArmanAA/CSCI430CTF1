@@ -34,6 +34,7 @@ $cd CSCI430CTF1
 $sudo npm install
 $sudo npm install -g nodemon
 $sudo npm install --save-dev nodemon
+$node_modules/.bin/sequelize db:migrate
 $sudo npm run start:dev
 
 
