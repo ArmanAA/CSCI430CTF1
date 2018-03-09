@@ -2,19 +2,19 @@ const User = require("../models").User;
 
 module.exports = {
   create(req, res) {
-    User.existsForUsername(req.body.username).then(isUnique => {
+    User.existsForUsername(req.query.user).then(isUnique => {
       if (isUnique) {
-        return res.status(401).send("Booo");
+        return res.status(401).send("Username already taken");
       } else {
         return User.create({
-          username: req.body.username,
-          balance: User.setBalance(req.body.username, 0),
-          password: User.generateHash(req.body.password)
+          username: req.query.user,
+          balance: User.setBalance(req.query.user, 0),
+          password: User.generateHash(req.query.pass)
         })
           .then(
             users =>
               res.status(201).send({
-                users: users.username,
+                users: users.user,
                 status: "OK"
               })
             //res.redirect("/profile")

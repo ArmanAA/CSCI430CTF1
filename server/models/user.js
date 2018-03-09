@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   });
+
   User.associate = function(models) {
     // associations can be defined here
   };
@@ -37,7 +38,8 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.deposit = function(username, amount, res) {
     User.findOne({ where: { username: username } }).then(project => {
-      return project.update({ balance: amount }).then(() => {
+      var totalAmount = parseFloat(project.balance) + parseFloat(amount);
+      return project.update({ balance: totalAmount }).then(() => {
         res.json("Deposit Successful");
       });
     });
@@ -56,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.getBalance = function(username, res) {
     User.findOne({ where: { username: username } }).then(project => {
-      res.json(project.balance);
+      res.json("balance = " + project.balance);
       // project will be the first entry of the Projects table with the title 'aProject' || null
     });
   };
@@ -76,6 +78,12 @@ module.exports = (sequelize, DataTypes) => {
     return bCrypt.compareSync(password, this.password);
   };
 
+  sequelize
+    .sync()
+    .then(() =>
+      console.log("tables have been successfully created, if one doesn't exist")
+    )
+    .catch(error => console.log("This error occured", error));
   // User.getBalance() {
   //   const bal = this.getDataValue(balance);
   //   return bal;

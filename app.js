@@ -35,7 +35,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // );
 
 const authController = require("./server/controllers").auth;
-app.post("/register", authController.create);
+app.get("/register", authController.create);
 
 const LocalStrategy = require("passport-local").Strategy;
 
@@ -71,8 +71,8 @@ passport.deserializeUser(function(id, done) {
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "username", // 'username' by default
-      passwordField: "password"
+      usernameField: "user", // 'username' by default
+      passwordField: "pass"
     },
     function(username, password, done) {
       User.findOne({ where: { username: username } }).then((user, error) => {
@@ -100,16 +100,29 @@ function isLoggedIn(req, res, next) {
   res.redirect("/");
 }
 
-app.post(
+// app.post(
+//   "/login",
+//   passport.authenticate("local", {
+//     failureRedirect: "/error"
+//     //successRedirect: "/manage"
+//   }),
+//   function(req, res) {
+//     // res.redirect("/manage",{user:req.user});
+//     //res.rend er("../server/views/profile.ejs", { user: req.user });
+//     res.status(201).send({ user: req.user, status: "OK" });
+//   }
+// );
+app.get(
   "/login",
   passport.authenticate("local", {
     failureRedirect: "/error"
     //successRedirect: "/manage"
   }),
   function(req, res) {
+    //json(req.username;
     // res.redirect("/manage",{user:req.user});
     //res.render("../server/views/profile.ejs", { user: req.user });
-    res.status(201).send({ user: req.user, status: "OK" });
+    res.status(201).send({ status: "OK" });
   }
 );
 //log out
@@ -120,27 +133,51 @@ app.get("/logout", function(req, res) {
 });
 //manage
 
-app.post("/manage", isLoggedIn, function(req, res) {
-  console.log(req.user.username);
-  if (req.body.action == "balance") {
-    console.log("BALANCED");
+// app.post("/manage", isLoggedIn, function(req, res) {
+//   console.log(req.user.username);
+//   if (req.body.action == "balance") {
+//     console.log("BALANCED");
+//     User.getBalance(req.user.username, res);
+//   } else if (req.body.action == "close") {
+//     console.log("DELETED");
+//     User.deleteAccount(req.user.username, res);
+//   } else if (
+//     req.body.action == "withdraw" &&
+//     Number.isInteger(req.body.amount) &&
+//     req.body.amount >= 0
+//   ) {
+//     User.withdraw(req.user.username, req.body.amount, res);
+//   } else if (
+//     req.body.action == "deposit" &&
+//     Number.isInteger(req.body.amount) &&
+//     req.body.amount >= 0
+//   ) {
+//     console.log(req.body.amount);
+//     User.deposit(req.user.username, req.body.amount, res);
+//   } else {
+//     res.json("please enter the correct input.");
+//     console.log("THIS IS THE END");
+//   }
+// });
+app.get("/manage", isLoggedIn, function(req, res) {
+  //console.log(req.user.username);
+  console.log(req.query.action);
+  console.log(req.query.amount);
+
+  if (req.query.action == "balance") {
+    //console.log("BALANCED");
+
     User.getBalance(req.user.username, res);
-  } else if (req.body.action == "close") {
-    console.log("DELETED");
+  } else if (req.query.action == "close") {
+    //console.log("DELETED");
     User.deleteAccount(req.user.username, res);
-  } else if (
-    req.body.action == "withdraw" &&
-    Number.isInteger(req.body.amount) &&
-    req.body.amount >= 0
-  ) {
-    User.withdraw(req.user.username, req.body.amount, res);
-  } else if (
-    req.body.action == "deposit" &&
-    Number.isInteger(req.body.amount) &&
-    req.body.amount >= 0
-  ) {
-    console.log(req.body.amount);
-    User.deposit(req.user.username, req.body.amount, res);
+  } else if (req.query.action == "withdraw" && req.query.amount >= 0) {
+    var withdrawAmount = req.query.amount;
+    User.withdraw(req.user.username, withdrawAmount, res);
+  } else if (req.query.action == "deposit" && req.query.amount >= 0) {
+    //console.log(req.body.amount);
+    var depositAmount = parseFloat(req.query.amount);
+    User.deposit(req.user.username, depositAmount, res);
   } else {
     res.json("please enter the correct input.");
     console.log("THIS IS THE END");
